@@ -1,0 +1,34 @@
+--- submodules/qtimespan/qtimespan.h	2016-09-25 09:17:05.054663209 +0200
++++ external/include/qtimespan.h	2016-09-25 09:42:58.497650032 +0200
+@@ -48,9 +48,9 @@
+ #include <QtCore/qsharedpointer.h>
+ #include <QtCore/qmetatype.h>
+ 
+-//#ifndef Q_CORE_EXPORT
++#ifndef Q_CORE_EXPORT
+     #define Q_CORE_EXPORT //make mingw shut up temporarily
+-//#endif
++#endif
+ 
+ QT_BEGIN_HEADER
+ 
+@@ -75,7 +75,7 @@
+         NoUnit = 0
+     };
+ 
+-    Q_DECLARE_FLAGS(TimeSpanFormat, TimeSpanUnit);
++    Q_DECLARE_FLAGS(TimeSpanFormat, TimeSpanUnit)
+ }
+ Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::TimeSpanFormat)
+ 
+@@ -259,8 +259,8 @@
+     QSharedDataPointer<QTimeSpanPrivate> d;
+ };
+ Q_DECLARE_TYPEINFO(QTimeSpan, Q_MOVABLE_TYPE);
+-Q_DECLARE_METATYPE(QTimeSpan);
+-Q_DECLARE_METATYPE(Qt::TimeSpanUnit);
++Q_DECLARE_METATYPE(QTimeSpan)
++Q_DECLARE_METATYPE(Qt::TimeSpanUnit)
+ 
+ //non-member operators
+ Q_CORE_EXPORT QTimeSpan operator+(const QTimeSpan &left, const QTimeSpan &right);

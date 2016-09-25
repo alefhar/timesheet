@@ -1,0 +1,3 @@
+[submodule "submodules/qtimespan"]
+	path = submodules/qtimespan
+	url = https://gitorious.org/qtimespandevel:qtimespandevel.git

@@ -1,0 +1,32 @@
+--- submodules/qtimespan/qtimespan.cpp	2016-09-25 09:44:40.590432273 +0200
++++ external/src/qtimespan.cpp	2016-09-25 09:45:52.459281357 +0200
+@@ -278,21 +278,21 @@
+     {
+         switch (unit) {
+         case::Qt::Milliseconds:
+-            return qApp->translate("QTimeSpanPrivate", "%n millisecond(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n millisecond(s)", "", num);
+         case::Qt::Seconds:
+-            return qApp->translate("QTimeSpanPrivate", "%n second(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n second(s)", "", num);
+         case::Qt::Minutes:
+-            return qApp->translate("QTimeSpanPrivate", "%n minute(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n minute(s)", "", num);
+         case::Qt::Hours:
+-            return qApp->translate("QTimeSpanPrivate", "%n hour(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n hour(s)", "", num);
+         case::Qt::Days:
+-            return qApp->translate("QTimeSpanPrivate", "%n day(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n day(s)", "", num);
+         case::Qt::Weeks:
+-            return qApp->translate("QTimeSpanPrivate", "%n week(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n week(s)", "", num);
+         case::Qt::Months:
+-            return qApp->translate("QTimeSpanPrivate", "%n month(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n month(s)", "", num);
+         case::Qt::Years:
+-            return qApp->translate("QTimeSpanPrivate", "%n year(s)", "", QCoreApplication::CodecForTr, num);
++            return qApp->translate("QTimeSpanPrivate", "%n year(s)", "", num);
+         default:
+             return QString();
+         }
