@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ENTRY_TYPE_HPP_WYJKPU21
+#define ENTRY_TYPE_HPP_WYJKPU21
 
 namespace ar
 {
@@ -9,3 +10,5 @@ namespace ar
         HOLIDAY
     };
 }
+
+#endif /* end of include guard: ENTRY_TYPE_HPP_WYJKPU21 */

@@ -1,5 +1,9 @@
 #include "ar/entry.hpp"
 
+ar::entry::entry()
+    : entry{-1, ar::entry_type::DEFAULT}
+{}
+
 ar::entry::entry(day_type day, entry_type type)
     : _day{day}
     , _type{type}
@@ -43,22 +47,22 @@ void ar::entry::set_break_end(QTime break_end)
     _break_end = break_end;
 }
 
-QTime ar::entry::get_checkin()
+QTime ar::entry::get_checkin() const
 {
     return _checkin;
 }
 
-QTime ar::entry::get_checkout()
+QTime ar::entry::get_checkout() const
 {
     return _checkout;
 }
 
-QTime ar::entry::get_break_begin()
+QTime ar::entry::get_break_begin() const
 {
     return _break_begin;
 }
 
-QTime ar::entry::get_break_end()
+QTime ar::entry::get_break_end() const
 {
     return _break_end;
 }
@@ -71,4 +75,25 @@ void ar::entry::refresh()
         auto time_break = _break_end - _break_begin;
         _time_worked = time_attended - time_break;
     }
+}
+void ar::entry::read(const QJsonObject &json)
+{
+    _type = static_cast<entry_type>(json["type"].toString().toUInt());
+    _day = json["day"].toString().toUInt();
+    _checkin = QTime::fromString(json["checkin"].toString(), TIME_FORMAT);
+    _checkout = QTime::fromString(json["checkout"].toString(), TIME_FORMAT);
+    _break_begin = QTime::fromString(json["break_begin"].toString(), TIME_FORMAT);
+    _break_end = QTime::fromString(json["break_end"].toString(), TIME_FORMAT);
+    _time_worked = QTimeSpan::fromString(json["time_worked"].toString(), TIME_FORMAT);
+}
+
+void ar::entry::write(QJsonObject &json) const
+{
+    json["type"] = QString::number(static_cast<int>(_type));
+    json["day"] = QString::number(_day);
+    json["checkin"] = _checkin.toString(TIME_FORMAT);
+    json["checkout"] = _checkout.toString(TIME_FORMAT);
+    json["break_begin"] = _break_begin.toString(TIME_FORMAT);
+    json["break_end"] = _break_end.toString(TIME_FORMAT);
+    json["time_worked"] = _time_worked.toString(TIME_FORMAT);
 }

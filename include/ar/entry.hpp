@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ENTRY_HPP_AFKDJFSC
+#define ENTRY_HPP_AFKDJFSC
 
 #include "defines.hpp"
 #include "entry_type.hpp"
@@ -6,6 +7,8 @@
 #include "qtimespan.h"
 
 #include <QtCore/QTime>
+#include <QtCore/QString>
+#include <QtCore/QJsonObject>
 
 namespace ar
 {
@@ -28,7 +31,11 @@ namespace ar
 
             bool _is_valid;
 
+            const QString TIME_FORMAT = "hh:mm";
+
         public:
+            entry();
+
             entry(day_type day, entry_type type);
 
             bool validate();
@@ -41,15 +48,21 @@ namespace ar
 
             void set_break_end(QTime break_end);
 
-            QTime get_checkin();
+            QTime get_checkin() const;
 
-            QTime get_checkout();
+            QTime get_checkout() const;
 
-            QTime get_break_begin();
+            QTime get_break_begin() const;
 
-            QTime get_break_end();
+            QTime get_break_end() const;
+
+            void read(const QJsonObject &json);
+
+            void write(QJsonObject &json) const;
 
         private:
             void refresh();
     };
 }
+
+#endif /* end of include guard: ENTRY_HPP_AFKDJFSC */

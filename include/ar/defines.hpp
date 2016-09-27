@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-using day_type = unsigned int;
+using day_type = int;
         
 using time_point_type = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
