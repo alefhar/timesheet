@@ -8,6 +8,7 @@
 
 #include <QtCore/QTime>
 #include <QtCore/QString>
+#include <QtCore/QVariant>
 #include <QtCore/QJsonObject>
 
 namespace ar
@@ -31,7 +32,25 @@ namespace ar
 
             bool _is_valid;
 
-            const QString TIME_FORMAT = "hh:mm";
+            static const QString TIME_FORMAT;// = "hh:mm";
+
+            static const int DAY_COLUMN = 0;
+
+            static const int TYPE_COLUMN = 1;
+
+            static const int CHECKIN_COLUMN = 2;
+
+            static const int CHECKOUT_COLUMN = 3;
+
+            static const int BREAK_BEGIN_COLUMN = 4;
+
+            static const int BREAK_END_COLUMN = 5;
+
+            static const int TIME_WORKED_COLUMN = 6;
+
+            static const int COLUMN_COUNT = 7;
+
+            static const QString COLUMN_NAMES[];
 
         public:
             entry();
@@ -40,13 +59,23 @@ namespace ar
 
             bool validate();
 
-            void set_checkin(QTime checkin);
+            void set(const QVariant &object, int column);
 
-            void set_checkout(QTime checkout);
+            void set_type(const entry_type &type);
 
-            void set_break_begin(QTime break_begin);
+            void set_checkin(const QTime &checkin);
 
-            void set_break_end(QTime break_end);
+            void set_checkout(const QTime &checkout);
+
+            void set_break_begin(const QTime &break_begin);
+
+            void set_break_end(const QTime &break_end);
+
+            QVariant get(int column) const;
+
+            int get_day() const;
+
+            entry_type get_type() const;
 
             QTime get_checkin() const;
 
@@ -54,11 +83,19 @@ namespace ar
 
             QTime get_break_begin() const;
 
+            QString get_time_worked() const;
+
             QTime get_break_end() const;
+
+            Qt::ItemFlags get_flags(Qt::ItemFlags current_flags, int index) const;
 
             void read(const QJsonObject &json);
 
             void write(QJsonObject &json) const;
+
+            static int get_column_count();
+
+            static QString get_header_name(int index);
 
         private:
             void refresh();

@@ -20,6 +20,62 @@ ar::timesheet_page::timesheet_page(int year, int month)
         init();
     }
 }
+            
+QVariant ar::timesheet_page::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role != Qt::DisplayRole)
+    {
+        return QVariant();
+    }
+
+    if (orientation == Qt::Horizontal)
+    {
+        return ar::entry::get_header_name(section);
+    }
+
+    return QVariant();
+}
+
+int ar::timesheet_page::rowCount(const QModelIndex &/*parent*/) const
+{
+    return _entries.size();
+}
+
+int ar::timesheet_page::columnCount(const QModelIndex &/*parent*/) const
+{
+    return ar::entry::get_column_count();
+}
+
+QVariant ar::timesheet_page::data(const QModelIndex &index, int role) const
+{
+    if (role != Qt::DisplayRole)
+    {
+        return QVariant();
+    }
+
+    auto &entry = _entries[index.row()];
+    return entry.get(index.column());
+}
+            
+Qt::ItemFlags ar::timesheet_page::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags current_flags = QAbstractTableModel::flags(index);
+    Qt::ItemFlags entry_flags = _entries[index.row()].get_flags(current_flags, index.column());
+
+    return entry_flags;
+}
+            
+bool ar::timesheet_page::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role != Qt::EditRole)
+    {
+        return false;
+    }
+
+    _entries[index.row()].set(value, index.column());
+
+    return true;
+}
 
 void ar::timesheet_page::init()
 {
