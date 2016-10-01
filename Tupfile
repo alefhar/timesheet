@@ -2,21 +2,29 @@ EXTERNAL_INCLUDE = external/include
 EXTERNAL_SRC_DIR = external/src
 EXTERNAL_LIB_DIR = external/lib
 
-CC       = g++
-CCFLAGS  = -std=c++14 -O3 -g -Wall -Wextra -pedantic -Iinclude/ -I$(EXTERNAL_INCLUDE)
-LDFLAGS  = -L$(EXTERNAL_LIB_DIR) -L/usr/local/lib
-GUIFLAGS = -I/usr/include/qt5 -I/usr/lib64/qt5/mkspecs/linux-g++-64 -I/usr/include/qt5/QtCore -L/usr/lib64 -fPIC
-LIBS     = -lQt5Core -lQt5Gui -lQt5Widgets
+NAMESPACE  = ar
+COMMON_DIR = common
+GUI_DIR    = gui
 
-SRC_DIR     = src
-GUI_SRC_DIR = $(SRC_DIR)/gui
-GUI_INC_DIR = include/gui
+INCLUDE_DIR        = include
+COMMON_INCLUDE_DIR = $(INCLUDE_DIR)/$(COMMON_DIR)
+GUI_INCLUDE_DIR    = $(INCLUDE_DIR)/$(GUI_DIR)
 
-LIB_DIR     = lib
-BUILD_DIR   = build
+SRC_DIR        = src
+COMMON_SRC_DIR = $(SRC_DIR)/$(COMMON_DIR)
+GUI_SRC_DIR    = $(SRC_DIR)/$(GUI_DIR)
 
-TEST_SRC_DIR   = $(SRC_DIR)/test
-TEST_BUILD_DIR = $(BUILD_DIR)/test
+BUILD_DIR        = build
+COMMON_BUILD_DIR = $(BUILD_DIR)/$(COMMON_DIR)
+GUI_BUILD_DIR    = $(BUILD_DIR)/$(GUI_DIR)
+
+CC          = g++
+INCLUDES    = -I$(COMMON_INCLUDE_DIR) -I$(GUI_INCLUDE_DIR) -I$(EXTERNAL_INCLUDE)
+QT_INCLUDES = -I/usr/include/qt5 -I/usr/lib64/qt5/mkspecs/linux-g++-64
+CCFLAGS     = -std=c++14 -O3 -g -Wall -Wextra -pedantic -fPIC $(INCLUDES) $(QT_INCLUDES)
+LIBS        = -L$(EXTERNAL_LIB_DIR) -L/usr/local/lib
+QT_LIBS     = -lQt5Core -lQt5Gui -lQt5Widgets
+LDFLAGS     = $(LIBS) -L/usr/lib64 $(QT_LIBS)
 
 TARGET = timesheet
 
@@ -24,20 +32,18 @@ TARGET = timesheet
 
 : submodules/qtimespan/qtimespan.cpp patches/qtimespan.cpp.patch |> patch -u %f -o %o |> $(EXTERNAL_SRC_DIR)/qtimespan.cpp
 
-: foreach $(EXTERNAL_SRC_DIR)/*.cpp | $(EXTERNAL_INCLUDE)/qtimespan.h $(EXTERNAL_SRC_DIR)/qtimespan.cpp |> $(CC) $(CCFLAGS) $(GUIFLAGS) -c -o %o %f |> $(BUILD_DIR)/%B.o {ext_obj}
+: foreach $(EXTERNAL_SRC_DIR)/*.cpp | $(EXTERNAL_INCLUDE)/qtimespan.h $(EXTERNAL_SRC_DIR)/qtimespan.cpp |> $(CC) $(CCFLAGS) -I/usr/include/qt5/QtCore -c -o %o %f |> $(BUILD_DIR)/%B.o {ext_obj}
 
-: foreach $(SRC_DIR)/*.cpp | $(EXTERNAL_INCLUDE)/qtimespan.h $(EXTERNAL_SRC_DIR)/qtimespan.cpp |> $(CC) $(CCFLAGS) $(GUIFLAGS) -c -o %o %f |> $(BUILD_DIR)/%B.o {obj}
+: foreach $(COMMON_SRC_DIR)/*.cpp | $(EXTERNAL_INCLUDE)/qtimespan.h |> $(CC) $(CCFLAGS) -c -o %o %f |> $(BUILD_DIR)/%B.o {common_obj}
 
-: {ext_obj} {obj} |> $(CC) $(CCFLAGS) -o %o %f $(LDFLAGS) $(LIBS) |> $(TARGET)
+: foreach $(GUI_INCLUDE_DIR)/$(NAMESPACE)/*.hpp |> moc-qt5 -p ar -o %o %f |> $(GUI_SRC_DIR)/moc_%B.cpp {moc}
 
-#: foreach $(GUI_INC_DIR)/*.h |> moc-qt5 -p gui -o %o %f |> $(GUI_SRC_DIR)/moc_%B.cpp {moc}
+: foreach $(GUI_SRC_DIR)/*.cpp | {moc} |> $(CC) $(CCFLAGS) -c -o %o %f |> $(BUILD_DIR)/%B.o {gui_obj}
 
-#: foreach $(GUI_SRC_DIR)/*.cpp |> $(CC) $(CCFLAGS) $(GUIFLAGS) -c -o %o %f |> $(BUILD_DIR)/%B.o {gui}
+: {gui_obj} {ext_obj} {common_obj} |> $(CC) $(CCFLAGS) -o %o %f $(LDFLAGS) |> $(TARGET)
 
 #: foreach $(TEST_SRC_DIR)/*.cpp |> $(CC) $(CCFLAGS) -c -o %o %f  |> $(TEST_BUILD_DIR)/%B.o {test_obj}
 
 #: {test_obj} {shared_obj} |> $(CC) $(CCFLAGS) -o %o %f -lgtest $(LDFLAGS) |> run_tests
-
-#: {shared_obj} $(SRC_DIR)/$(TARGET).cpp |> $(CC) $(CCFLAGS) -o %o %f $(LDFLAGS) |> $(TARGET)
 
 .gitignore

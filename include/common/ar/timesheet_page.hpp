@@ -12,6 +12,8 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
 
+#include <QtGui/QBrush>
+
 namespace ar
 {
     class timesheet_page : public QAbstractTableModel

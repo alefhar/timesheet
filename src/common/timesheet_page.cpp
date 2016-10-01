@@ -48,13 +48,27 @@ int ar::timesheet_page::columnCount(const QModelIndex &/*parent*/) const
 
 QVariant ar::timesheet_page::data(const QModelIndex &index, int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role == Qt::BackgroundRole)
     {
-        return QVariant();
+        QDate date(_year, _month, index.row() + 1);
+        int day_of_week = date.dayOfWeek();
+        if (day_of_week == Qt::Saturday || day_of_week == Qt::Sunday)
+        {
+            return QVariant(QBrush(Qt::lightGray));
+        }
+        else
+        {
+            return QVariant(QBrush(Qt::white));
+        }
     }
 
-    auto &entry = _entries[index.row()];
-    return entry.get(index.column());
+    if (role == Qt::DisplayRole)
+    {
+        auto &entry = _entries[index.row()];
+        return entry.get(index.column());
+    }
+
+    return QVariant();
 }
             
 Qt::ItemFlags ar::timesheet_page::flags(const QModelIndex &index) const
