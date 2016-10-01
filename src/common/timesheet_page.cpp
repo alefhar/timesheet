@@ -75,6 +75,9 @@ Qt::ItemFlags ar::timesheet_page::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags current_flags = QAbstractTableModel::flags(index);
     Qt::ItemFlags entry_flags = _entries[index.row()].get_flags(current_flags, index.column());
+    if (!is_weekday(index.row() + 1)) {
+        entry_flags &= ~Qt::ItemIsEditable;
+    }
 
     return entry_flags;
 }
@@ -99,6 +102,14 @@ void ar::timesheet_page::init()
     {
         _entries.push_back(entry{day, ar::entry_type::DEFAULT});
     }
+}
+
+bool ar::timesheet_page::is_weekday(int day) const
+{
+    QDate date(_year, _month, day);
+
+    int day_of_week = date.dayOfWeek();
+    return day_of_week != Qt::Saturday && day_of_week != Qt::Sunday;
 }
 
 void ar::timesheet_page::read(const QJsonObject &json)

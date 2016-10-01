@@ -48,6 +48,8 @@ namespace ar
 
         private:
             void init();
+
+            bool is_weekday(int day) const;
     };
 }
 
